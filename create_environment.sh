@@ -13,39 +13,57 @@ mkdir -p "$main_folder"/{app,modules,assets,config}
 # Script to create reminder.sh
 cat << 'EOF' > "$main_folder/app/reminder.sh"
 #!/bin/bash
-source ./modules/functions.sh
-source ./config/config.env
 
-echo "Checking who hasn't submitted $ASSIGNMENT..."
-grep -v "submitted" ./assets/submissions.txt | cut -d',' -f1
+# Source environment variables and helper functions
+source ./config/config.env
+source ./modules/functions.sh
+
+# Path to the submissions file
+submissions_file="./assets/submissions.txt"
+
+# Print remaining time and run the reminder function
+echo "Assignment: $ASSIGNMENT"
+echo "Days remaining to submit: $DAYS_REMAINING days"
+echo "--------------------------------------------"
+
+check_submissions "$submissions_file"
 EOF
 
 # Script create functions.sh
 cat << 'EOF' > "$main_folder/modules/functions.sh"
 #!/bin/bash
-# Add any custom functions here
-get_pending_students() {
-grep -v "submitted" ./assets/submissions.txt | cut -d',' -f1
+
+# Function to read submissions file and output students who have not submitted
+function check_submissions {
+local submissions_file=\$1
+echo "Checking submissions in \$submissions_file"
+
+# Skip the header and iterate through the lines
+while IFS=, read -r student assignment status; do
+student=\$(echo "\$student" | xargs)
+assignment=\$(echo "\$assignment" | xargs)
+status=\$(echo "\$status" | xargs)
+if [[ "\$assignment" == "\$ASSIGNMENT" && "\$status" == "not submitted" ]]; then
+echo "Reminder: \$student has not submitted the \$ASSIGNMENT assignment!"
+fi
+done < <(tail -n +2 "\$submissions_file") # Skip the header
 }
 EOF
 
 # Script to create config.env
 cat << EOF > "$main_folder/config/config.env"
-ASSIGNMENT=Assignment_1
+# This is the config file
+ASSIGNMENT="Shell Navigation"
+DAYS_REMAINING=2
 EOF
 
 # Script to create submissions.txt
 cat << EOF > "$main_folder/assets/submissions.txt"
-Alice,submitted
-Bob,pending
-Charlie,pending
-Diana,submitted
-Eve,pending
-Frank,submitted
-Grace,pending
-Henry,submitted
-Ivan,pending
-Jack,submitted
+student, assignment, submission status
+Chinemerem, Shell Navigation, not submitted
+Chiagoziem, Git, submitted
+Divine, Shell Navigation, not submitted
+Anissa, Shell Basics, submitted
 EOF
 
 # Script to create startup.sh
