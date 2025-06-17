@@ -1,45 +1,61 @@
-#!bin/bash
+#!/bin/bash
 
-# first we ask user for the name
- read -p "Enter your name:  " name
+# Ask user for there name
+read -p "Enter your name: " name
 
-# Create the folder or directory of files submission_remider_{user's name}
+# Assigning main folder to the user's directory
 
-folder="submission_reminder_$name"
+main_folder="submission_reminder_${name}"
 
-mkdir -p "$folder"
+# Script to create directory structure
+mkdir -p "$main_folder"/{app,modules,assets,config}
 
-# create the startup.sh file
-
-touch "$folder/startup.sh"
-echo -e "#!/bin/bash/n1 ./scripts/reminder.sh"
-
-# Directory = file mapping
-
-declare -A file_map=(
-	["app"]="reminder.sh"
-	["modules"]="functions.sh"
-	["assets"]="submissions.txt"
-	["config"]="config.env"
-)
-declare -A files_content=(
-["reminder.sh"]="#!/bin/bash
-source ./scripts/functions.sh
+# Script to create reminder.sh
+cat << 'EOF' > "$main_folder/app/reminder.sh"
+#!/bin/bash
+source ./modules/functions.sh
 source ./config/config.env
 
-echo "Reminder: These students have not submitted the assignment: \$ASSIGNMENT"
-grep -v "submitted" submissions.txt | cut -d',' -f1")
+echo "Checking who hasn't submitted $ASSIGNMENT..."
+grep -v "submitted" ./assets/submissions.txt | cut -d',' -f1
+EOF
 
+# Script create functions.sh
+cat << 'EOF' > "$main_folder/modules/functions.sh"
+#!/bin/bash
+# Add any custom functions here
+get_pending_students() {
+grep -v "submitted" ./assets/submissions.txt | cut -d',' -f1
+}
+EOF
 
-# create each directory and its unique file with a loop
+# Script to create config.env
+cat << EOF > "$main_folder/config/config.env"
+ASSIGNMENT=Assignment_1
+EOF
 
-for dir in "${!file_map[@]}"; do
-	path="$folder/$dir"
-	mkdir -p "$path"
-	touch "$path/${file_map[$dir]}"
+# Script to create submissions.txt
+cat << EOF > "$main_folder/assets/submissions.txt"
+Alice,submitted
+Bob,pending
+Charlie,pending
+Diana,submitted
+Eve,pending
+Frank,submitted
+Grace,pending
+Henry,submitted
+Ivan,pending
+Jack,submitted
+EOF
 
-	mkdir -p "$dir_path"
-	echo -e "${}"
-done
+# Script to create startup.sh
+cat << 'EOF' > "$main_folder/startup.sh"
+#!/bin/bash
+./app/reminder.sh
+EOF
 
-# found a way to jump to the next line
+# Make all the .sh files executable
+chmod +x "$main_folder"/app/*.sh
+chmod +x "$main_folder"/modules/*.sh
+chmod +x "$main_folder"/startup.sh
+echo " Environment setup completely in folder: $main_folder"
