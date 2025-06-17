@@ -67,9 +67,14 @@ Anissa, Shell Basics, submitted
 EOF
 
 # Script to create startup.sh
-cat << 'EOF' > "$main_folder/startup.sh"
+cat << EOF > "$main_folder/startup.sh"
 #!/bin/bash
-./app/reminder.sh
+
+# Get the path to the folder this script is in
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Run reminder.sh from inside the app folder
+bash "$DIR/app/reminder.sh"
 EOF
 
 # Make all the .sh files executable
