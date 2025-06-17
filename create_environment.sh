@@ -81,4 +81,5 @@ EOF
 chmod +x "$main_folder"/app/*.sh
 chmod +x "$main_folder"/modules/*.sh
 chmod +x "$main_folder"/startup.sh
-echo " Environment setup completely in folder: $main_folder"
+echo " Environment setup completely in folder: ./$main_folder"
+
