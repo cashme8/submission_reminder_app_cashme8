@@ -2,7 +2,7 @@
 
 This is a simple shell-based submission reminder system. It helps track which students have not submitted a specific assignment and sends reminders based on a list of student names and submission status.
 
-## 🔧 Setup Instructions
+## Setup Instructions
 
 1. **Clone the repository** to your local machine:
    ```bash
@@ -12,7 +12,7 @@ This is a simple shell-based submission reminder system. It helps track which st
 chmod +x create_environment.sh
 
 ### Run the setup script to create the project folder and files:
-./create_environment.sh
+*./create_environment.sh*
 
 ### Navigate into the generated folder (e.g., submission_reminder_cashme8) and run the app:
 cd submission_reminder_cashme8

@@ -14,13 +14,15 @@ mkdir -p "$main_folder"/{app,modules,assets,config}
 cat << 'EOF' > "$main_folder/app/reminder.sh"
 #!/bin/bash
 
-# Source environment variables and helper functions
+# Get script directory
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-source ./config/config.env
-source ./modules/functions.sh
+# Source environment variables and helper functions
+source "$SCRIPT_DIR/../config/config.env"
+source "$SCRIPT_DIR/../modules/functions.sh"
 
 # Path to the submissions file
-submissions_file="./assets/submissions.txt"
+submissions_file="$SCRIPT_DIR/../assets/submissions.txt"
 
 # Print remaining time and run the reminder function
 echo "Assignment: $ASSIGNMENT"
@@ -68,14 +70,14 @@ Anissa, Shell Basics, submitted
 EOF
 
 # Script to create startup.sh
-cat << EOF > "$main_folder/startup.sh"
+cat << 'EOF' > "$main_folder/startup.sh"
 #!/bin/bash
 
-# Get the path to the folder this script is in
+# Get the directory this script is in
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Run reminder.sh from inside the app folder
-./$DIR/app/reminder.sh
+# Navigate to the app directory and run the main script
+bash "$DIR/app/reminder.sh"
 EOF
 
 # Make all the .sh files executable
